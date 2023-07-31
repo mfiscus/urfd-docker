@@ -41,6 +41,8 @@ sed -i "s/\(PageOptions\['RepeatersPage'\]\['IPModus'\][[:blank:]]*\=[[:blank:]]
 sed -i "s/\(PageOptions\['PeerPage'\]\['IPModus'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1\'HideIP\'/g" ${URFD_DASH_CONFIG} # Hide IP addresses on peer page
 sed -i "s/\(PageOptions\['CustomTXT'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1'$(echo ${DESCRIPTION} | awk '{gsub(/ /,"\\ ")}8')'/g" ${URFD_DASH_CONFIG} # Add description text
 sed -i "s/\(PageOptions\['IRCDDB'\]\['Show'\][[:blank:]]*\=[[:blank:]]*\)[[:alpha:]]*/\1false/g" ${URFD_DASH_CONFIG} # Hide IRCDDB page
+sed -i "/_GET\['show'\]\ ==\ \"livequadnet\"/d" ${URFD_WEB_DIR}/index.php # remove livequadnet
+sed -i "/show=livequadnet/d" ${URFD_WEB_DIR}/index.php # remove livequadnet
 sed -i "s/d\.m\.Y/m\/d\/Y/g" ${URFD_WEB_DIR}/pgs/peers.php # convert date format to US
 sed -i "s/d\.m\.Y/m\/d\/Y/g" ${URFD_WEB_DIR}/pgs/repeaters.php # convert date format to US
 sed -i "s/d\.m\.Y/m\/d\/Y/g" ${URFD_WEB_DIR}/pgs/users.php # convert date format to US
@@ -81,6 +83,7 @@ if [[ -e ${URFD_CONFIG_DIR:-} ]] && [[ -e ${URFD_CONFIG_TMP_DIR:-} ]]; then
   sed -i "s/\(PageOptions\['IRCDDB'\]\['Show'\][[:blank:]]*\=[[:blank:]]*\)[[:alpha:]]*/\1false/g" ${URFD_DASH_CONFIG}
   sed -i "s,\(CallingHome\['HashFile'\][[:blank:]]*\=[[:blank:]]*\)\"\([[:print:]]*\)\",\1\"${URFD_CONFIG_DIR}/callinghome.php\",g" ${URFD_DASH_CONFIG} # move callinghome file to /config
   sed -i "s,\(CallingHome\['LastCallHomefile'\][[:blank:]]*\=[[:blank:]]*\)\"\([[:print:]]*\)\",\1\"${URFD_CONFIG_DIR}\/lastcallhome.php\",g" ${URFD_DASH_CONFIG} # move lastcallhome file to /config
+  sed -i "s,\(CallingHome\['InterlinkFile'\][[:blank:]]*\=[[:blank:]]*\)\"\([[:print:]]*\)\",\1\"${URFD_CONFIG_DIR}\/xlxd.interlink\",g" ${URFD_DASH_CONFIG} # move xlxd.interlink file to /config
   cp -vupn ${URFD_CONFIG_TMP_DIR}/* ${URFD_CONFIG_DIR}/ # don't overwrite config files if they exist
   #rm -rf ${URFD_CONFIG_TMP_DIR}
 

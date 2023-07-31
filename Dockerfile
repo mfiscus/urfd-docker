@@ -104,20 +104,6 @@ COPY root/ /
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
     apt -y purge build-essential \
         cmake \
-        #libasio-dev \
-        #libargon2-0-dev \
-        #libcppunit-dev \
-        #libfmt-dev \
-        #libgnutls28-dev \
-        #libhttp-parser-dev \
-        #libjsoncpp-dev \
-        #libmsgpack-dev \
-        #libcurl4-gnutls-dev \
-        #libncurses5-dev \
-        #libreadline-dev \
-        #libssl-dev \
-        #nettle-dev \
-        #nlohmann-json3-dev \
         pkg-config && \
     apt -y autoremove && \
     apt -y clean && \
@@ -132,8 +118,12 @@ EXPOSE ${PORT}/tcp
 EXPOSE 8080/tcp
 #UDP port 10001 (json interface XLX Core)
 EXPOSE 10001/udp
-#UDP port 10002 (XLX interlink)
+#UDP port 10002 (BM connection)
 EXPOSE 10002/udp
+#UDP port 10017 (URF interlinking)
+EXPOSE 10017/udp
+#UDP port 17000 (M17 protocol)
+EXPOSE 17000/udp
 #UDP port 42000 (YSF protocol)
 EXPOSE 42000/udp
 #UDP port 30001 (DExtra protocol)
@@ -142,13 +132,19 @@ EXPOSE 30001/udp
 EXPOSE 20001/udp
 #UDP port 30051 (DCS protocol)
 EXPOSE 30051/udp
+#UDP port 32000 (USRP protocol)
+EXPOSE 32000/udp
+#UDP port 41000 (P25 port)
+EXPOSE 41000/udp
+#UDP port 41400 (NXDN port)
+EXPOSE 41400/udp
 #UDP port 8880 (DMR+ DMO mode)
 EXPOSE 8880/udp
 #UDP port 62030 (MMDVM protocol)
 EXPOSE 62030/udp
-#UDP port 12345 - 12346 (Icom Terminal presence and request port)
+#UDP port 12345 - 12346 (G3 Icom Terminal presence and request port)
 EXPOSE 12345-12346/udp
-#UDP port 40000 (Icom Terminal dv port)
+#UDP port 40000 (G3 Icom Terminal port)
 EXPOSE 40000/udp
 #UDP port 21110 (Yaesu IMRS protocol)
 EXPOSE 21110/udp
