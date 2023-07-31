@@ -84,8 +84,9 @@ if [[ -e ${URFD_CONFIG_DIR:-} ]] && [[ -e ${URFD_CONFIG_TMP_DIR:-} ]]; then
   sed -i "s,\(CallingHome\['HashFile'\][[:blank:]]*\=[[:blank:]]*\)\"\([[:print:]]*\)\",\1\"${URFD_CONFIG_DIR}/callinghome.php\",g" ${URFD_DASH_CONFIG} # move callinghome file to /config
   sed -i "s,\(CallingHome\['LastCallHomefile'\][[:blank:]]*\=[[:blank:]]*\)\"\([[:print:]]*\)\",\1\"${URFD_CONFIG_DIR}\/lastcallhome.php\",g" ${URFD_DASH_CONFIG} # move lastcallhome file to /config
   sed -i "s,\(CallingHome\['InterlinkFile'\][[:blank:]]*\=[[:blank:]]*\)\"\([[:print:]]*\)\",\1\"${URFD_CONFIG_DIR}\/xlxd.interlink\",g" ${URFD_DASH_CONFIG} # move xlxd.interlink file to /config
+  rm -f ${URFD_CONFIG_TMP_DIR}/urfd.service # get rid of systemd service
   cp -vupn ${URFD_CONFIG_TMP_DIR}/* ${URFD_CONFIG_DIR}/ # don't overwrite config files if they exist
-  #rm -rf ${URFD_CONFIG_TMP_DIR}
+  rm -rf ${URFD_CONFIG_TMP_DIR}
 
 fi
 
