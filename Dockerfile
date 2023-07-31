@@ -4,12 +4,11 @@ FROM amd64/ubuntu:latest AS base
 ENTRYPOINT ["/init"]
 
 ENV TERM="xterm" LANG="C.UTF-8" LC_ALL="C.UTF-8"
-ENV CALLSIGN EMAIL URL XLXNUM TZ="UTC"
-ENV CALLHOME=false COUNTRY="United States" DESCRIPTION="XLX Reflector" PORT=80
-ENV MODULES=4 MODULEA="Main" MODULEB="TBD" MODULEC="TBD" MODULED="TBD"
-ENV XLXCONFIG=/var/www/xlxd/pgs/config.inc.php
-ENV XLXD_DIR=/xlxd XLXD_INST_DIR=/src/xlxd XLXD_WEB_DIR=/var/www/xlxd
-ARG YSF_AUTOLINK_ENABLE=1 YSF_AUTOLINK_MODULE="A" YSF_DEFAULT_NODE_RX_FREQ=438000000 YSF_DEFAULT_NODE_TX_FREQ=438000000
+ENV CALLSIGN EMAIL URL URFNUM TZ="UTC"
+ENV CALLHOME=false COUNTRY="United States" DESCRIPTION="XLX Reflector" PORT=80 YSFID=12345
+ENV NUM_MODULES=4 MODULES=ABCD MODULEA="Main" MODULEB="TBD" MODULEC="TBD" MODULED="TBD" BRANDMEISTER="false" ALLSTAR="false"
+ENV URFD_INST_DIR=/src/urfd OPENDHT_INST_DIR=/src/opendht URFD_WEB_DIR=/var/www/urfd
+ENV URFD_DASH_CONFIG=/var/www/urfd/pgs/config.inc.php URFD_CONFIG_DIR=/config URFD_CONFIG_TMP_DIR=/config_tmp
 ARG ARCH=x86_64 S6_OVERLAY_VERSION=3.1.5.0 S6_RCD_DIR=/etc/s6-overlay/s6-rc.d S6_LOGGING=1 S6_KEEP_ENV=1
 
 # install dependencies
@@ -19,17 +18,34 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
     apt install -y \
         apache2 \
         build-essential \
+        cmake \
         curl \
         libapache2-mod-php \
+        libasio-dev \
+        libargon2-0-dev \
+        libcppunit-dev \
+        libfmt-dev \
+        libgnutls28-dev \
+        libhttp-parser-dev \
+        libjsoncpp-dev \
+        libmsgpack-dev \
+        libcurl4-gnutls-dev \
+        libncurses5-dev \
+        libreadline-dev \
+        libssl-dev \
+        nettle-dev \
+        nlohmann-json3-dev \
         php \
-        php-mbstring
+        php-mbstring \
+        pkg-config 
 
 # Setup directories
 RUN mkdir -p \
-    ${XLXD_DIR} \
-    ${XLXD_INST_DIR} \
-    ${XLXD_WEB_DIR} && \
-    chown -R www-data:www-data ${XLXD_DIR}/
+    ${OPENDHT_INST_DIR} \
+    ${URFD_CONFIG_DIR} \
+    ${URFD_CONFIG_TMP_DIR} \
+    ${URFD_INST_DIR} \
+    ${URFD_WEB_DIR}
 
 # Fetch and extract S6 overlay
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
@@ -38,44 +54,48 @@ RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-${ARCH}.tar.xz /tmp
 RUN tar -C / -Jxpf /tmp/s6-overlay-${ARCH}.tar.xz
 
-# Clone xlxd repository
-ADD --keep-git-dir=true https://github.com/LX3JL/xlxd.git#master ${XLXD_INST_DIR}
+# Clone OpenDHT repository
+ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#master ${OPENDHT_INST_DIR}
+
+# Clone urfd repository
+ADD --keep-git-dir=true https://github.com/n7tae/urfd.git#main ${URFD_INST_DIR}
 
 # Copy in source code (use local sources if repositories go down)
 #COPY src/ /
 
-# uncomment next 2 lines for chandler tag
-#ARG REFLECTOR_NAME="'C','h','a','n','d','l','e','r','\ ','H','a','m','s','\ '"
-#RUN sed -i "s/'X','L','X','\ ','r','e','f','l','e','c','t','o','r','\ '/${REFLECTOR_NAME}/g" ${XLXD_INST_DIR}/src/cysfprotocol.cpp
-
-# Perform pre-compiliation configurations
-RUN sed -i "s/\#define\ RUN_AS_DAEMON/\/\/\#define\ RUN_AS_DAEMON/g" ${XLXD_INST_DIR}/src/main.h && \
-    sed -i "1!b;s/\(NB_OF_MODULES[[:blank:]]*\)[[:digit:]]*/\1${MODULES}/g" ${XLXD_INST_DIR}/src/main.h && \
-    sed -i "s/\(YSF_AUTOLINK_ENABLE[[:blank:]]*\)[[:digit:]]/\1${YSF_AUTOLINK_ENABLE}/g" ${XLXD_INST_DIR}/src/main.h && \
-    sed -i "s/\(YSF_AUTOLINK_MODULE[[:blank:]]*\)'[[:alpha:]]'/\1\'${YSF_AUTOLINK_MODULE}\'/g" ${XLXD_INST_DIR}/src/main.h && \
-    sed -i "s/\(YSF_DEFAULT_NODE_RX_FREQ[[:blank:]]*\)[[:digit:]]*/\1${YSF_DEFAULT_NODE_RX_FREQ}/g" ${XLXD_INST_DIR}/src/main.h && \
-    sed -i "s/\(YSF_DEFAULT_NODE_TX_FREQ[[:blank:]]*\)[[:digit:]]*/\1${YSF_DEFAULT_NODE_TX_FREQ}/g" ${XLXD_INST_DIR}/src/main.h && \
-    cp ${XLXD_INST_DIR}/src/main.h ${XLXD_DIR}/main.h.customized && \
-    cp ${XLXD_INST_DIR}/src/cysfprotocol.cpp ${XLXD_DIR}/cysfprotocol.cpp.customized
-
-# Compile and install xlxd
-RUN cd ${XLXD_INST_DIR}/src && \
-    make clean && \
+# Compile and install OpenDHT
+RUN cd ${OPENDHT_INST_DIR} && \
+    mkdir -p build && \
+    cd build && \
+    cmake -DOPENDHT_PYTHON=OFF -DCMAKE_INSTALL_PREFIX=/usr .. && \
     make && \
     make install
 
+# Perform pre-compiliation configurations (remove references to systemctl from Makefile)
+RUN sed -i "s/\(^[[:space:]]*[[:print:]]*..systemd*\)/#\1/" ${URFD_INST_DIR}/reflector/Makefile && \
+    sed -i "s/\(^[[:space:]]*systemctl*\)/#\1/" ${URFD_INST_DIR}/reflector/Makefile
+
+# Compile and install urfd
+RUN cd ${URFD_INST_DIR}/reflector && \
+    cp ../config/urfd.mk . && \
+    make && \
+    make install
+
+# Install configuration files
+RUN cp -iv ${URFD_INST_DIR}/config/* ${URFD_CONFIG_TMP_DIR}/
+
 # Install web dashboard
-RUN cp -ivR ${XLXD_INST_DIR}/dashboard/* ${XLXD_WEB_DIR}/ && \
-    chown -R www-data:www-data ${XLXD_WEB_DIR}/
+RUN cp -ivR ${URFD_INST_DIR}/dashboard/* ${URFD_WEB_DIR}/ && \
+    chown -R www-data:www-data ${URFD_WEB_DIR}/
 
 # Copy in custom images and stylesheet
-COPY --chown=www-data:www-data custom/up.png ${XLXD_WEB_DIR}/img/up.png
-COPY --chown=www-data:www-data custom/down.png ${XLXD_WEB_DIR}/img/down.png
-COPY --chown=www-data:www-data custom/ear.png ${XLXD_WEB_DIR}/img/ear.png
-COPY --chown=www-data:www-data custom/header.jpg ${XLXD_WEB_DIR}/img/header.jpg
-COPY --chown=www-data:www-data custom/logo.jpg ${XLXD_WEB_DIR}/img/dvc.jpg
-COPY --chown=www-data:www-data custom/layout.css ${XLXD_WEB_DIR}/css/layout.css
-COPY --chown=www-data:www-data custom/favicon.ico ${XLXD_WEB_DIR}/favicon.ico
+COPY --chown=www-data:www-data custom/up.png ${URFD_WEB_DIR}/img/up.png
+COPY --chown=www-data:www-data custom/down.png ${URFD_WEB_DIR}/img/down.png
+COPY --chown=www-data:www-data custom/ear.png ${URFD_WEB_DIR}/img/ear.png
+COPY --chown=www-data:www-data custom/header.jpg ${URFD_WEB_DIR}/img/header.jpg
+COPY --chown=www-data:www-data custom/logo.jpg ${URFD_WEB_DIR}/img/dvc.jpg
+COPY --chown=www-data:www-data custom/layout.css ${URFD_WEB_DIR}/css/layout.css
+COPY --chown=www-data:www-data custom/favicon.ico ${URFD_WEB_DIR}/favicon.ico
 
 # Copy in s6 service definitions and scripts
 COPY root/ /

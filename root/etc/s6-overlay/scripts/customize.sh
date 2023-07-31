@@ -17,34 +17,72 @@ fi
 
 # configure dashboard
 if [ ! -z ${CALLSIGN:-} ]; then
-  sed -i "s/\(PageOptions\['MetaAuthor'\][[:blank:]]*\=[[:blank:]]*\)'\([[:alnum:]]*\)'/\1\'${CALLSIGN}\'/g" ${XLXCONFIG} # callsign
+  sed -i "s/\(PageOptions\['MetaAuthor'\][[:blank:]]*\=[[:blank:]]*\)'\([[:alnum:]]*\)'/\1\'${CALLSIGN}\'/g" ${URFD_DASH_CONFIG} # callsign
 
 fi
 
 if [ ! -z ${EMAIL:-} ]; then
-  sed -i "s/\(PageOptions\['ContactEmail'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1\'${EMAIL}\'/g" ${XLXCONFIG} # email address
+  sed -i "s/\(PageOptions\['ContactEmail'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1\'${EMAIL}\'/g" ${URFD_DASH_CONFIG} # email address
 
 fi
 
-sed -i "s/\(CallingHome\['Country'\][[:blank:]]*\=[[:blank:]]*\)\"\([[:print:]]*\)\"/\1\"$(echo ${COUNTRY} | awk '{gsub(/ /,"\\ ")}8')\"/g" ${XLXCONFIG} # country
-sed -i "s/\(CallingHome\['Comment'\][[:blank:]]*\=[[:blank:]]*\)\"\([[:print:]]*\)\"/\1\"$(echo ${DESCRIPTION} | awk '{gsub(/ /,"\\ ")}8')\"/g" ${XLXCONFIG} # description
-sed -i "s/\(CallingHome\['MyDashBoardURL'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1\'http:\/\/${URL}:${PORT}\/\'/g" ${XLXCONFIG} # URL
-sed -i "s/\(CallingHome\['Active'\][[:blank:]]*\=[[:blank:]]*\)[[:alpha:]]*/\1${CALLHOME}/g" ${XLXCONFIG} # call home active
-sed -i "s/\(PageOptions\['NumberOfModules'\][[:blank:]]*\=[[:blank:]]*\)[[:digit:]]*/\1${MODULES}/g" ${XLXCONFIG} # number of modules
-sed -i "s/\(CallingHome\['HashFile'\][[:blank:]]*\=[[:blank:]]*\)\"\([[:print:]]*\)\"/\1\"\/xlxd\/callinghome.php\"/g" ${XLXCONFIG}
-sed -i "s/\(CallingHome\['LastCallHomefile'\][[:blank:]]*\=[[:blank:]]*\)\"\([[:print:]]*\)\"/\1\"\/xlxd\/lastcallhome.php\"/g" ${XLXCONFIG} # move callinghome file to /xlxd
-sed -i "s/\(PageOptions\['ModuleNames'\]\['A'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1\'${MODULEA}\'/g" ${XLXCONFIG} # name module A
-sed -i "s/\(PageOptions\['ModuleNames'\]\['B'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1\'${MODULEB}\'/g" ${XLXCONFIG} # name module B
-sed -i "s/\(PageOptions\['ModuleNames'\]\['C'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1\'${MODULEC}\'/g" ${XLXCONFIG} # name module C
-sed -i "s/\(PageOptions\['ModuleNames'\]\['D'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1\'${MODULED}\'/g" ${XLXCONFIG} # name module D
-sed -i "s/\(PageOptions\['RepeatersPage'\]\['IPModus'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1\'HideIP\'/g" ${XLXCONFIG} # Hide IP addresses on repeaters page
-sed -i "s/\(PageOptions\['PeerPage'\]\['IPModus'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1\'HideIP\'/g" ${XLXCONFIG} # Hide IP addresses on peer page
-sed -i "s/\(PageOptions\['CustomTXT'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1'$(echo ${DESCRIPTION} | awk '{gsub(/ /,"\\ ")}8')'/g" ${XLXCONFIG}
-sed -i "s/\(PageOptions\['IRCDDB'\]\['Show'\][[:blank:]]*\=[[:blank:]]*\)[[:alpha:]]*/\1false/g" ${XLXCONFIG}
-sed -i "s/d\.m\.Y/m\/d\/Y/g" ${XLXD_WEB_DIR}/pgs/peers.php # convert date format to US
-sed -i "s/d\.m\.Y/m\/d\/Y/g" ${XLXD_WEB_DIR}/pgs/repeaters.php # convert date format to US
-sed -i "s/d\.m\.Y/m\/d\/Y/g" ${XLXD_WEB_DIR}/pgs/traffic.php # convert date format to US
-sed -i "s/d\.m\.Y/m\/d\/Y/g" ${XLXD_WEB_DIR}/pgs/users.php # convert date format to US
+sed -i "s/\(CallingHome\['Country'\][[:blank:]]*\=[[:blank:]]*\)\"\([[:print:]]*\)\"/\1\"$(echo ${COUNTRY} | awk '{gsub(/ /,"\\ ")}8')\"/g" ${URFD_DASH_CONFIG} # country
+sed -i "s/\(CallingHome\['Comment'\][[:blank:]]*\=[[:blank:]]*\)\"\([[:print:]]*\)\"/\1\"$(echo ${DESCRIPTION} | awk '{gsub(/ /,"\\ ")}8')\"/g" ${URFD_DASH_CONFIG} # description
+sed -i "s/\(CallingHome\['MyDashBoardURL'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1\'http:\/\/${URL}:${PORT}\/\'/g" ${URFD_DASH_CONFIG} # URL
+sed -i "s/\(CallingHome\['Active'\][[:blank:]]*\=[[:blank:]]*\)[[:alpha:]]*/\1${CALLHOME}/g" ${URFD_DASH_CONFIG} # call home active
+sed -i "s/\(PageOptions\['NumberOfModules'\][[:blank:]]*\=[[:blank:]]*\)[[:digit:]]*/\1${NUM_MODULES}/g" ${URFD_DASH_CONFIG} # number of modules
+sed -i "s/\(PageOptions\['ModuleNames'\]\['A'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1\'${MODULEA}\'/g" ${URFD_DASH_CONFIG} # name module A
+sed -i "s/\(PageOptions\['ModuleNames'\]\['B'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1\'${MODULEB}\'/g" ${URFD_DASH_CONFIG} # name module B
+sed -i "s/\(PageOptions\['ModuleNames'\]\['C'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1\'${MODULEC}\'/g" ${URFD_DASH_CONFIG} # name module C
+sed -i "s/\(PageOptions\['ModuleNames'\]\['D'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1\'${MODULED}\'/g" ${URFD_DASH_CONFIG} # name module D
+sed -i "s/\(PageOptions\['RepeatersPage'\]\['IPModus'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1\'HideIP\'/g" ${URFD_DASH_CONFIG} # Hide IP addresses on repeaters page
+sed -i "s/\(PageOptions\['PeerPage'\]\['IPModus'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1\'HideIP\'/g" ${URFD_DASH_CONFIG} # Hide IP addresses on peer page
+sed -i "s/\(PageOptions\['CustomTXT'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1'$(echo ${DESCRIPTION} | awk '{gsub(/ /,"\\ ")}8')'/g" ${URFD_DASH_CONFIG} # Add description text
+sed -i "s/\(PageOptions\['IRCDDB'\]\['Show'\][[:blank:]]*\=[[:blank:]]*\)[[:alpha:]]*/\1false/g" ${URFD_DASH_CONFIG} # Hide IRCDDB page
+sed -i "s/d\.m\.Y/m\/d\/Y/g" ${URFD_WEB_DIR}/pgs/peers.php # convert date format to US
+sed -i "s/d\.m\.Y/m\/d\/Y/g" ${URFD_WEB_DIR}/pgs/repeaters.php # convert date format to US
+sed -i "s/d\.m\.Y/m\/d\/Y/g" ${URFD_WEB_DIR}/pgs/users.php # convert date format to US
+
+
+# install configuration files
+if [[ -e ${URFD_CONFIG_DIR:-} ]] && [[ -e ${URFD_CONFIG_TMP_DIR:-} ]]; then
+  IP=$( hostname -I )
+  sed -i "1!b;s/\(Callsign[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*/\1${URFNUM}/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "1!b;s/\(SysopEmail[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*/\1${EMAIL}/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s/\(Country[[:blank:]]*\=[[:blank:]]*\)[[:alpha:]]*/\1${COUNTRY}/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s/\(Sponsor[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*/\1${DESCRIPTION}/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s/\(DashboardUrl[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*/\1http:\/\/${URL}:${PORT}/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s/\(IPv4Binding[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*/\1${IP}/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s/\(^Modules[[:blank:]]*\=[[:blank:]]*\)[[:alpha:]]*/\1${MODULES}/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s/\(DescriptionA[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*/\1${MODULEA}/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s/DescriptionD/DescriptionB/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s/\(DescriptionB[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*/\1${MODULEB}/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s/DescriptionM/DescriptionC/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s/\(DescriptionC[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*/\1${MODULEC}/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s/DescriptionS/DescriptionD/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s/\(DescriptionD[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*/\1${MODULED}/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "1!b;s/\(Enable[[:blank:]]*\=[[:blank:]]*\)[[:alpha:]]*/\1${BRANDMEISTER}/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "3!b;s/\(Enable[[:blank:]]*\=[[:blank:]]*\)[[:alpha:]]*/\1${ALLSTAR}/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s/\(IPAddress[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*/\1${IP}/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s/\(RegistrationID[[:blank:]]*\=[[:blank:]]*\)[[:digit:]]*/\1${YSFID}/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s/\(RegistrationName[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*/\1${URFNUM}/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s/\(RegistrationDescription[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*/\1${DESCRIPTION}/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s'\(^FilePath[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*dmrid.dat'\1${URFD_CONFIG_DIR}/dmrid.dat'g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s'\(^FilePath[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*nxdn.dat'\1${URFD_CONFIG_DIR}/nxdn.dat'g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s'\(^FilePath[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*ysfnode.dat'\1${URFD_CONFIG_DIR}/ysfnode.dat'g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s'\(XmlPath[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*xlxd.xml'\1${URFD_CONFIG_DIR}/xlxd.xml'g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s/\(Service\['XMLFile'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'/\1\'\/${URFD_CONFIG_DIR}\/xlxd.xml\'/g" ${URFD_DASH_CONFIG}
+  sed -i "s'\(WhitelistPath[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*urfd.whitelist'\1${URFD_CONFIG_DIR}/urfd.whitelist'g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s'\(BlacklistPath[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*urfd.blacklist'\1${URFD_CONFIG_DIR}/urfd.blacklist'g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s'\(InterlinkPath[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*urfd.interlink'\1${URFD_CONFIG_DIR}/urfd.interlink'g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s'\(G3TerminalPath[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*urfd.terminal'\1${URFD_CONFIG_DIR}/urfd.terminal'g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s/\(PageOptions\['IRCDDB'\]\['Show'\][[:blank:]]*\=[[:blank:]]*\)[[:alpha:]]*/\1false/g" ${URFD_CONFIG_TMP_DIR}
+  sed -i "s,\(CallingHome\['HashFile'\][[:blank:]]*\=[[:blank:]]*\)\"\([[:print:]]*\)\",\1\"${URFD_CONFIG_DIR}/callinghome.php\",g" ${URFD_DASH_CONFIG} # move callinghome file to /config
+  sed -i "s,\(CallingHome\['LastCallHomefile'\][[:blank:]]*\=[[:blank:]]*\)\"\([[:print:]]*\)\",\1\"${URFD_CONFIG_DIR}\/lastcallhome.php\",g" ${URFD_DASH_CONFIG} # move lastcallhome file to /config
+  cp -iv ${URFD_CONFIG_TMP_DIR}/* ${URFD_CONFIG_DIR}/
+  rm -rf ${URFD_CONFIG_TMP_DIR}
+
+fi
 
 # set timezone
 ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime && echo ${TZ} > /etc/timezone
