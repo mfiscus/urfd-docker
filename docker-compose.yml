@@ -1,13 +1,13 @@
 version: '3.8'
 
 services:
-  xlxd:
-    image: mfiscus/xlxd:latest
-    container_name: xlxd
-    hostname: xlxd_container
+  urfd:
+    image: mfiscus/urfd:latest
+    container_name: urfd
+    hostname: urfd_container
     environment:
       # only set CALLHOME to true once your are certain your configuration is correct
-      # make sure you backup your callinghome.php file (which should be located on the docker host in /opt/xlxd/) 
+      # make sure you backup your callinghome.php file (which should be located on the docker host in /opt/urfd/) 
       CALLHOME: 'false' 
       CALLSIGN: 'your_callsign'
       EMAIL: 'your@email.com'
@@ -15,7 +15,7 @@ services:
       PORT: '80'
       XLXNUM: 'XLX000'
       COUNTRY: 'United States'
-      DESCRIPTION: 'My xlxd-docker reflector'
+      DESCRIPTION: 'My urfd-docker reflector'
       # Define how many modules you require
       MODULES: '4'
       # Name your modules however you like (container only supports naming first 4)
@@ -26,5 +26,5 @@ services:
       TZ: 'UTC'
     volumes:
       # local directory where state and config files (including callinghome.php) will be saved
-      - /opt/xlxd:/config
+      - /opt/urfd:/config
     restart: unless-stopped

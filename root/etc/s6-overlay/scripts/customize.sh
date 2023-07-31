@@ -74,4 +74,4 @@ a2dissite *default >/dev/null 2>&1
 a2ensite ${URL} >/dev/null 2>&1
 
 touch /.firstRunComplete
-echo "xlxd first run setup complete"
+echo "urfd first run setup complete"
