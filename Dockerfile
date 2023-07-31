@@ -82,10 +82,10 @@ RUN cd ${URFD_INST_DIR}/reflector && \
     make install
 
 # Install configuration files
-RUN cp -iv ${URFD_INST_DIR}/config/* ${URFD_CONFIG_TMP_DIR}/
+RUN cp -v ${URFD_INST_DIR}/config/* ${URFD_CONFIG_TMP_DIR}/
 
 # Install web dashboard
-RUN cp -ivR ${URFD_INST_DIR}/dashboard/* ${URFD_WEB_DIR}/ && \
+RUN cp -vR ${URFD_INST_DIR}/dashboard/* ${URFD_WEB_DIR}/ && \
     chown -R www-data:www-data ${URFD_WEB_DIR}/
 
 # Copy in custom images and stylesheet
@@ -101,7 +101,24 @@ COPY --chown=www-data:www-data custom/favicon.ico ${URFD_WEB_DIR}/favicon.ico
 COPY root/ /
 
 # Cleanup
-RUN apt -y purge build-essential && \
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
+    apt -y purge build-essential \
+        cmake \
+        #libasio-dev \
+        #libargon2-0-dev \
+        #libcppunit-dev \
+        #libfmt-dev \
+        #libgnutls28-dev \
+        #libhttp-parser-dev \
+        #libjsoncpp-dev \
+        #libmsgpack-dev \
+        #libcurl4-gnutls-dev \
+        #libncurses5-dev \
+        #libreadline-dev \
+        #libssl-dev \
+        #nettle-dev \
+        #nlohmann-json3-dev \
+        pkg-config && \
     apt -y autoremove && \
     apt -y clean && \
     rm -rf /var/lib/apt/lists/* && \
