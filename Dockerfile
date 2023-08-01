@@ -7,7 +7,7 @@ ENV TERM="xterm" LANG="C.UTF-8" LC_ALL="C.UTF-8"
 ENV CALLSIGN EMAIL URL URFNUM=URF??? TZ="UTC"
 ENV CALLHOME=false COUNTRY="United States" DESCRIPTION="XLX Reflector" PORT=80 YSFID=12345
 ENV NUM_MODULES=4 MODULES=ABCD MODULEA="Main" MODULEB="TBD" MODULEC="TBD" MODULED="TBD" BRANDMEISTER="false" ALLSTAR="false"
-ENV URFD_WEB_DIR=/var/www/urfd URFD_DASH_CONFIG=${URFD_WEB_DIR}/pgs/config.inc.php URFD_CONFIG_DIR=/config URFD_CONFIG_TMP_DIR=/config_tmp
+ENV URFD_WEB_DIR=/var/www/urfd URFD_DASH_CONFIG=/var/www/urfd/pgs/config.inc.php URFD_CONFIG_DIR=/config URFD_CONFIG_TMP_DIR=/config_tmp
 ARG URFD_INST_DIR=/src/urfd OPENDHT_INST_DIR=/src/opendht TCD_INST_DIR=/src/tcd IMBE_INST_DIR=/src/imbe_vocoder FTDI_INST_DIR=/src/ftdi
 ARG ARCH=x86_64 S6_OVERLAY_VERSION=3.1.5.0 S6_RCD_DIR=/etc/s6-overlay/s6-rc.d S6_LOGGING=1 S6_KEEP_ENV=1
 
@@ -126,9 +126,7 @@ RUN cp -vR ${URFD_INST_DIR}/dashboard/* ${URFD_WEB_DIR}/ && \
 COPY --chown=www-data:www-data custom/up.png ${URFD_WEB_DIR}/img/up.png
 COPY --chown=www-data:www-data custom/down.png ${URFD_WEB_DIR}/img/down.png
 COPY --chown=www-data:www-data custom/ear.png ${URFD_WEB_DIR}/img/ear.png
-#COPY --chown=www-data:www-data custom/header.jpg ${URFD_WEB_DIR}/img/header.jpg
-COPY --chown=www-data:www-data custom/logo.jpg ${URFD_WEB_DIR}/img/dvc.jpg
-#COPY --chown=www-data:www-data custom/layout.css ${URFD_WEB_DIR}/css/layout.css
+COPY --chown=www-data:www-data custom/logo.png ${URFD_WEB_DIR}/img/logo.png
 COPY --chown=www-data:www-data custom/favicon.ico ${URFD_WEB_DIR}/favicon.ico
 
 # Copy in s6 service definitions and scripts
