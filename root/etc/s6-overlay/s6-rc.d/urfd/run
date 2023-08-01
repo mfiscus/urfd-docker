@@ -1,6 +1,4 @@
 #!/command/with-contenv sh
 
-INIFILE="/config/urfd.ini"
-
 # start daemon
-exec /usr/local/bin/urfd ${INIFILE}
+exec /usr/local/bin/urfd ${URFD_CONFIG_DIR}/urfd.ini
