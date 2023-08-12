@@ -156,6 +156,8 @@ EXPOSE 10017/udp
 EXPOSE 12345-12346/udp
 #UDP port 17000 (M17 protocol)
 EXPOSE 17000/udp
+#UDP port 17171 (OpenDHT)
+EXPOSE 17171/udp
 #UPD port 20001 (DPlus protocol)
 EXPOSE 20001/udp
 #UDP port 30001 (DExtra protocol)

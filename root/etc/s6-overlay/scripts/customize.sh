@@ -57,7 +57,6 @@ if [[ -e ${URFD_CONFIG_DIR:-} ]] && [[ -e ${URFD_CONFIG_TMP_DIR:-} ]]; then
   sed -i "s/\(Country[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*/\1${COUNTRY}/g" ${URFD_CONFIG_TMP_DIR}/urfd.ini
   sed -i "s/\(Sponsor[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*/\1${DESCRIPTION}/g" ${URFD_CONFIG_TMP_DIR}/urfd.ini
   sed -i "s/\(DashboardUrl[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*/\1http:\/\/${URL}:${PORT}/g" ${URFD_CONFIG_TMP_DIR}/urfd.ini
-  sed -i "s/\(IPv4Binding[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*/\1${IP}/g" ${URFD_CONFIG_TMP_DIR}/urfd.ini
   sed -i "s/\(^Modules[[:blank:]]*\=[[:blank:]]*\)[[:alpha:]]*/\1${MODULES}/g" ${URFD_CONFIG_TMP_DIR}/urfd.ini
   sed -i "s/\(DescriptionA[[:blank:]]*\=[[:blank:]]*\)[[:print:]]*/\1${MODULEA}/g" ${URFD_CONFIG_TMP_DIR}/urfd.ini
   sed -i "s/DescriptionD/DescriptionB/g" ${URFD_CONFIG_TMP_DIR}/urfd.ini
