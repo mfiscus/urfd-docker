@@ -1,0 +1,4 @@
+#!/command/with-contenv sh
+
+# start daemon
+exec /usr/local/bin/tcd ${URFD_CONFIG_DIR}/tcd.ini

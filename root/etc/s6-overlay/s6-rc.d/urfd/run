@@ -1,4 +1,9 @@
 #!/command/with-contenv sh
 
+PIDFILE="/var/log/xlxd.pid"
+
+# Create pid file for service uptime dashboard class
+touch ${PIDFILE}
+
 # start daemon
 exec /usr/local/bin/urfd ${URFD_CONFIG_DIR}/urfd.ini

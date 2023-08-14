@@ -4,11 +4,11 @@ FROM amd64/ubuntu:latest AS base
 ENTRYPOINT ["/init"]
 
 ENV TERM="xterm" LANG="C.UTF-8" LC_ALL="C.UTF-8"
-ENV CALLSIGN EMAIL URL URFNUM TZ="UTC"
+ENV CALLSIGN EMAIL URL URFNUM=URF??? TZ="UTC"
 ENV CALLHOME=false COUNTRY="United States" DESCRIPTION="XLX Reflector" PORT=80 YSFID=12345
 ENV NUM_MODULES=4 MODULES=ABCD MODULEA="Main" MODULEB="TBD" MODULEC="TBD" MODULED="TBD" BRANDMEISTER="false" ALLSTAR="false"
-ENV URFD_INST_DIR=/src/urfd OPENDHT_INST_DIR=/src/opendht URFD_WEB_DIR=/var/www/urfd
-ENV URFD_DASH_CONFIG=/var/www/urfd/pgs/config.inc.php URFD_CONFIG_DIR=/config URFD_CONFIG_TMP_DIR=/config_tmp
+ENV URFD_WEB_DIR=/var/www/urfd URFD_DASH_CONFIG=/var/www/urfd/pgs/config.inc.php URFD_CONFIG_DIR=/config URFD_CONFIG_TMP_DIR=/config_tmp
+ARG URFD_INST_DIR=/src/urfd OPENDHT_INST_DIR=/src/opendht TCD_INST_DIR=/src/tcd IMBE_INST_DIR=/src/imbe_vocoder FTDI_INST_DIR=/src/ftdi
 ARG ARCH=x86_64 S6_OVERLAY_VERSION=3.1.5.0 S6_RCD_DIR=/etc/s6-overlay/s6-rc.d S6_LOGGING=1 S6_KEEP_ENV=1
 
 # install dependencies
@@ -45,7 +45,9 @@ RUN mkdir -p \
     ${URFD_CONFIG_DIR} \
     ${URFD_CONFIG_TMP_DIR} \
     ${URFD_INST_DIR} \
-    ${URFD_WEB_DIR}
+    ${URFD_WEB_DIR} \
+    ${FTDI_INST_DIR} \
+    ${IMBE_INST_DIR}
 
 # Fetch and extract S6 overlay
 ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
@@ -57,11 +59,32 @@ RUN tar -C / -Jxpf /tmp/s6-overlay-${ARCH}.tar.xz
 # Clone OpenDHT repository
 ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#master ${OPENDHT_INST_DIR}
 
+# Clone imbe_vocoder repository
+ADD --keep-git-dir=true https://github.com/nostar/imbe_vocoder.git#master ${IMBE_INST_DIR}
+
+# Clone tcd repository
+ADD --keep-git-dir=true https://github.com/n7tae/tcd.git#main ${TCD_INST_DIR}
+
 # Clone urfd repository
 ADD --keep-git-dir=true https://github.com/n7tae/urfd.git#main ${URFD_INST_DIR}
 
+# Download and extract ftdi driver
+ADD https://ftdichip.com/wp-content/uploads/2022/07/libftd2xx-${ARCH}-1.4.27.tgz /tmp
+RUN tar -C ${FTDI_INST_DIR} -zxvf /tmp/libftd2xx-${ARCH}-*.tgz
+
 # Copy in source code (use local sources if repositories go down)
 #COPY src/ /
+
+# Install FTDI driver
+RUN cp ${FTDI_INST_DIR}/release/build/libftd2xx.* /usr/local/lib && \
+    chmod 0755 /usr/local/lib/libftd2xx.so.* && \
+    ln -sf /usr/local/lib/libftd2xx.so.* /usr/local/lib/libftd2xx.so
+
+# Compile and install imbe_vocoder
+RUN cd ${IMBE_INST_DIR} && \
+    make && \
+    make install && \
+    ldconfig   
 
 # Compile and install OpenDHT
 RUN cd ${OPENDHT_INST_DIR} && \
@@ -71,9 +94,20 @@ RUN cd ${OPENDHT_INST_DIR} && \
     make && \
     make install
 
-# Perform pre-compiliation configurations (remove references to systemctl from Makefile)
+# Perform pre-compiliation configurations (remove references to systemctl from Makefiles)
 RUN sed -i "s/\(^[[:space:]]*[[:print:]]*..systemd*\)/#\1/" ${URFD_INST_DIR}/reflector/Makefile && \
-    sed -i "s/\(^[[:space:]]*systemctl*\)/#\1/" ${URFD_INST_DIR}/reflector/Makefile
+    sed -i "s/\(^[[:space:]]*systemctl*\)/#\1/" ${URFD_INST_DIR}/reflector/Makefile && \
+    sed -i "s/\(^[[:space:]]*[[:print:]]*..systemd*\)/#\1/" ${TCD_INST_DIR}/Makefile && \
+    sed -i "s/\(^[[:space:]]*systemctl*\)/#\1/" ${TCD_INST_DIR}/Makefile
+
+# Compile and install tcd
+RUN cd ${TCD_INST_DIR} && \
+    cp ./config/tcd.mk . && \
+    make && \
+    make install
+
+# Install configuration files
+RUN cp -v ${TCD_INST_DIR}/config/* ${URFD_CONFIG_TMP_DIR}/
 
 # Compile and install urfd
 RUN cd ${URFD_INST_DIR}/reflector && \
@@ -92,9 +126,7 @@ RUN cp -vR ${URFD_INST_DIR}/dashboard/* ${URFD_WEB_DIR}/ && \
 COPY --chown=www-data:www-data custom/up.png ${URFD_WEB_DIR}/img/up.png
 COPY --chown=www-data:www-data custom/down.png ${URFD_WEB_DIR}/img/down.png
 COPY --chown=www-data:www-data custom/ear.png ${URFD_WEB_DIR}/img/ear.png
-COPY --chown=www-data:www-data custom/header.jpg ${URFD_WEB_DIR}/img/header.jpg
-COPY --chown=www-data:www-data custom/logo.jpg ${URFD_WEB_DIR}/img/dvc.jpg
-COPY --chown=www-data:www-data custom/layout.css ${URFD_WEB_DIR}/css/layout.css
+COPY --chown=www-data:www-data custom/logo.png ${URFD_WEB_DIR}/img/logo.png
 COPY --chown=www-data:www-data custom/favicon.ico ${URFD_WEB_DIR}/favicon.ico
 
 # Copy in s6 service definitions and scripts
@@ -124,6 +156,8 @@ EXPOSE 10017/udp
 EXPOSE 12345-12346/udp
 #UDP port 17000 (M17 protocol)
 EXPOSE 17000/udp
+#UDP port 17171 (OpenDHT)
+EXPOSE 17171/udp
 #UPD port 20001 (DPlus protocol)
 EXPOSE 20001/udp
 #UDP port 30001 (DExtra protocol)
