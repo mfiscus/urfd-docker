@@ -6,25 +6,50 @@ services:
     container_name: urfd
     hostname: urfd_container
     environment:
-      # only set CALLHOME to true once your are certain your configuration is correct
-      # make sure you backup your callinghome.php file (which should be located on the docker host in /opt/urfd/) 
-      CALLHOME: 'false' 
+      # DO NOT enable the "calling home" feature unless you are sure
+      # that you will not be infringing on an existing XLX or XRF
+      # reflector with the same callsign suffix. If you don't understand
+      # what this means, don't set CALLHOME: 'true'
+      CALLHOME: 'false'
+      # Define your FCC callsign
       CALLSIGN: 'your_callsign'
+      # Define your email address which will appear on dashboard
       EMAIL: 'your@email.com'
+      # Define your fully-qualified domain name
       URL: 'your_domain.com'
+      # Setting this to true will ensure 'https' is used in URL
+      SSL: 'true'
+      # Port that dashboard runs on. If SSL is enabled, then this is used for the backend proxy service
       PORT: '80'
-      XLXNUM: 'XLX000'
+      # Where ? is A-Z or 0-9. NO EXCEPTIONS!
+      URFNUM: 'URF???'
+      # Get an ID here -> https://register.ysfreflector.de
+      YSFID: '12345'
+      # Add your ID to the file here -> https://github.com/g4klx/NXDNClients/blob/master/NXDNGateway/NXDNHosts.txt
+      NXDNID: '12345'
+      # Add your ID to the file here -> https://github.com/g4klx/P25Clients/blob/master/P25Gateway/P25Hosts.txt
+      P25ID: '12345'
+      # Set to 'true' if you intend to interlink with Brandmeister (TGIF is better)
+      BRANDMEISTER: 'false'
+      # Set to 'true' if you want to enable Allstar node
+      ALLSTAR: 'false'
+      # Change to your country
       COUNTRY: 'United States'
+      # Decribe your reflector. used in various place on dashboard and YSF registry
       DESCRIPTION: 'My urfd-docker reflector'
-      # Define how many modules you require
-      MODULES: '4'
+      # MODULES: ABCDEFGHIJKLMNOPQRSTUVWXYZ
+      MODULES: 'ABCD'
       # Name your modules however you like (container only supports naming first 4)
       MODULEA: 'Main'
       MODULEB: 'D-Star'
       MODULEC: 'DMR'
       MODULED: 'YSF'
+      # Set your timezone here if you want dashboard times to apear in local time
       TZ: 'UTC'
+    # Privilged MUST be enabled if you are using AMBE transcoding usb hardware 
+    privileged: true
     volumes:
-      # local directory where state and config files (including callinghome.php) will be saved
+      # Local directory where state and config files (including callinghome.php and urfd.ini)
+      # will be saved. Change /opt/urfd to any location you prefer on your host machine
       - /opt/urfd:/config
     restart: unless-stopped

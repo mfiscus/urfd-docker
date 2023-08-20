@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3.8'
 
 networks:
   proxy:
@@ -250,7 +250,8 @@ services:
     # Privilged MUST be enabled if you are using AMBE transcoding usb hardware 
     privileged: true
     volumes:
-      # change /opt/urfd to any location you prefer on your host machine
+      # Local directory where state and config files (including callinghome.php and urfd.ini)
+      # will be saved. Change /opt/urfd to any location you prefer on your host machine
       - /opt/urfd:/config
     dns:
       - 1.1.1.1
