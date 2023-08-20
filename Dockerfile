@@ -5,7 +5,7 @@ ENTRYPOINT ["/init"]
 
 ENV TERM="xterm" LANG="C.UTF-8" LC_ALL="C.UTF-8"
 ENV CALLSIGN EMAIL URL SSL URFNUM=URF??? TZ="UTC"
-ENV CALLHOME=false COUNTRY="United States" DESCRIPTION="XLX Reflector" PORT=80 YSFID=12345
+ENV CALLHOME=false COUNTRY="United States" DESCRIPTION="XLX Reflector" PORT=80 YSFID=12345 NXDNID=12345 P25ID=12345
 ENV MODULES=ABCD MODULEA="Main" MODULEB="TBD" MODULEC="TBD" MODULED="TBD" BRANDMEISTER="false" ALLSTAR="false"
 ENV URFD_WEB_DIR=/var/www/urfd URFD_CONFIG_DIR=/config URFD_CONFIG_TMP_DIR=/config_tmp
 ARG URFD_INST_DIR=/src/urfd OPENDHT_INST_DIR=/src/opendht TCD_INST_DIR=/src/tcd IMBE_INST_DIR=/src/imbe_vocoder FTDI_INST_DIR=/src/ftdi
@@ -57,7 +57,9 @@ ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLA
 RUN tar -C / -Jxpf /tmp/s6-overlay-${ARCH}.tar.xz
 
 # Clone OpenDHT repository
-ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#master ${OPENDHT_INST_DIR}
+#ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#master ${OPENDHT_INST_DIR}
+#ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#v2.6.0rc7 ${OPENDHT_INST_DIR}
+ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#v2.5.5 ${OPENDHT_INST_DIR}
 
 # Clone imbe_vocoder repository
 ADD --keep-git-dir=true https://github.com/nostar/imbe_vocoder.git#master ${IMBE_INST_DIR}

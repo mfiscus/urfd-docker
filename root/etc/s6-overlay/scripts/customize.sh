@@ -71,7 +71,7 @@ function __line_comment() {
         local property=${2}
         local file=${URFD_CONFIG_TMP_DIR}/urfd.ini
 
-        sed -i "/^\[${section}\]/,/^\[/{s'\(^${property}*\)'#\ \1'}" ${file}
+        sed -i "/^\[${section}\]/,/^\[/{s'\(^${property}\)'#\ \1'}" ${file}
 
         return
 
@@ -212,10 +212,10 @@ if [[ -e ${URFD_CONFIG_DIR:-} ]] && [[ -e ${URFD_CONFIG_TMP_DIR:-} ]]; then
   IP=$( hostname -I )
   
   if [[ ${SSL:-} == "true" ]]; then
-    __edit_value "DashboardUrl" "https:\/\/${URL}"
+    __edit_value "Names" "DashboardUrl" "https://${URL}"
 
   else
-    __edit_value "DashboardUrl" "http:\/\/${URL}:${PORT}"
+    __edit_value "Names" "DashboardUrl" "http://${URL}:${PORT}"
   
   fi
 
@@ -225,7 +225,7 @@ if [[ -e ${URFD_CONFIG_DIR:-} ]] && [[ -e ${URFD_CONFIG_TMP_DIR:-} ]]; then
   __edit_value "Names" "Country" "${COUNTRY}"
   __edit_value "Names" "Sponsor" "${DESCRIPTION}"
   __edit_value "Modules" "Modules" "${MODULES}"
-  __edit_value "Modules" "DescriptionA" ${MODULEA}
+  __edit_value "Modules" "DescriptionA" "${MODULEA}"
   __edit_property "DescriptionD" "DescriptionB"
   __edit_value "Modules" "DescriptionB" "${MODULEB}"
   __edit_property "DescriptionM" "DescriptionC"
@@ -234,6 +234,8 @@ if [[ -e ${URFD_CONFIG_DIR:-} ]] && [[ -e ${URFD_CONFIG_TMP_DIR:-} ]]; then
   __edit_value "Modules" "DescriptionD" "${MODULED}"
   __line_comment "Modules" "DescriptionZ"
   __edit_value "Brandmeister" "Enable" "${BRANDMEISTER}"
+  __edit_value "NXDN" "ReflectorID" "${NXDNID}"
+  __edit_value "P25" "ReflectorID" "${P25ID}"
   __edit_value "USRP" "Enable" "${ALLSTAR}"
   __edit_value "USRP" "Callsign" "${CALLSIGN}"
   __edit_value "USRP" "IPAddress" "${IP}"
