@@ -4,10 +4,10 @@ FROM amd64/ubuntu:latest AS base
 ENTRYPOINT ["/init"]
 
 ENV TERM="xterm" LANG="C.UTF-8" LC_ALL="C.UTF-8"
-ENV CALLSIGN EMAIL URL URFNUM=URF??? TZ="UTC"
-ENV CALLHOME=false COUNTRY="United States" DESCRIPTION="XLX Reflector" PORT=80 YSFID=12345
-ENV NUM_MODULES=4 MODULES=ABCD MODULEA="Main" MODULEB="TBD" MODULEC="TBD" MODULED="TBD" BRANDMEISTER="false" ALLSTAR="false"
-ENV URFD_WEB_DIR=/var/www/urfd URFD_DASH_CONFIG=/var/www/urfd/pgs/config.inc.php URFD_CONFIG_DIR=/config URFD_CONFIG_TMP_DIR=/config_tmp
+ENV CALLSIGN EMAIL URL SSL URFNUM=URF??? TZ="UTC"
+ENV CALLHOME=false COUNTRY="United States" DESCRIPTION="XLX Reflector" PORT=80 YSFID=12345 NXDNID=12345 P25ID=12345
+ENV MODULES=ABCD MODULEA="Main" MODULEB="TBD" MODULEC="TBD" MODULED="TBD" BRANDMEISTER="false" ALLSTAR="false"
+ENV URFD_WEB_DIR=/var/www/urfd URFD_CONFIG_DIR=/config URFD_CONFIG_TMP_DIR=/config_tmp
 ARG URFD_INST_DIR=/src/urfd OPENDHT_INST_DIR=/src/opendht TCD_INST_DIR=/src/tcd IMBE_INST_DIR=/src/imbe_vocoder FTDI_INST_DIR=/src/ftdi
 ARG ARCH=x86_64 S6_OVERLAY_VERSION=3.1.5.0 S6_RCD_DIR=/etc/s6-overlay/s6-rc.d S6_LOGGING=1 S6_KEEP_ENV=1
 
@@ -57,7 +57,9 @@ ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLA
 RUN tar -C / -Jxpf /tmp/s6-overlay-${ARCH}.tar.xz
 
 # Clone OpenDHT repository
-ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#master ${OPENDHT_INST_DIR}
+#ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#master ${OPENDHT_INST_DIR}
+#ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#v2.6.0rc7 ${OPENDHT_INST_DIR}
+ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#v2.5.5 ${OPENDHT_INST_DIR}
 
 # Clone imbe_vocoder repository
 ADD --keep-git-dir=true https://github.com/nostar/imbe_vocoder.git#master ${IMBE_INST_DIR}
