@@ -61,7 +61,7 @@ ALLSTAR=false
 # Change to your country
 COUNTRY="United States"
 
-# Decribe your reflector. used in various place on dashboard and YSF registry
+# Decribe your reflector. used in various places on dashboard *and* YSF registry
 DESCRIPTION="My urfd-docker reflector"
 
 # MODULES: ABCDEFGHIJKLMNOPQRSTUVWXYZ
@@ -101,7 +101,7 @@ docker \
 The parameters are split into two halves, separated by a colon, the left hand side representing the host and the right the container side.
 
 * `--detach` - runs container in background *(required)*
-* `--env` - used to set environment variables in the container *(minimally required: CALLSIGN, EMAIL, URL, URFNUM )*
+* `--env` - set environment variables in the container *(minimum required: CALLSIGN, EMAIL, URL, URFNUM )*
 * `--hostname` - assigns a container host name *(optional)*
 * `--name` - assigns a name to the container *(optional)*
 * `--restart` - set restart policy to apply when a container exits *(optional)*
