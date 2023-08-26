@@ -1,6 +1,6 @@
 # URFd Docker Image
 
-This Ubuntu Linux based Docker image allows you to run [N7TAE's](https://github.com/n7tae) [URFd](https://github.com/n7tae/urfd) without having to configure any files or compile any code.
+This Ubuntu Linux based Docker image allows you to run [N7TAE's](https://github.com/n7tae) [URFd](https://github.com/n7tae/urfd) and [tcd](https://github.com/n7tae/tcd) without having to configure any files or compile any code.
 
 This is a currently a single-arch image and will only run on amd64 devices.
 
