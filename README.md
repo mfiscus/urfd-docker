@@ -436,6 +436,7 @@ services:
 ## License
 
 Copyright (C) 2016 Jean-Luc Deltombe LX3JL and Luc Engelmann LX1IQ  
+Copyright (C) 2022 Doug McLain AD8DP and Thomas A. Early N7TAE  
 Copyright (C) 2023 Matt Fiscus KK7MNZ
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
