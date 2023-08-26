@@ -168,7 +168,7 @@ services:
     restart: unless-stopped
 ```
 
-#### Using [Docker Compose](https://docs.docker.com/compose/) and [traefik](https://github.com/traefik/traefik) (reverse proxy w/ssl):  
+#### Using [Docker Compose](https://docs.docker.com/compose/) (recommended) and [traefik](https://github.com/traefik/traefik) (reverse proxy w/ssl):  
 
 ```yml
 version: '3.8'
@@ -435,8 +435,8 @@ services:
 
 ## License
 
-Copyright (C) 2016 Jean-Luc Deltombe LX3JL and Luc Engelmann LX1IQ 
-Copyright (C) 2023 mfiscus
+Copyright (C) 2016 Jean-Luc Deltombe LX3JL and Luc Engelmann LX1IQ  
+Copyright (C) 2023 Matt Fiscus
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
