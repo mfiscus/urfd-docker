@@ -253,6 +253,7 @@ if [[ -e ${URFD_CONFIG_DIR:-} ]] && [[ -e ${URFD_CONFIG_TMP_DIR:-} ]]; then
 
   rm -f ${URFD_CONFIG_TMP_DIR}/*d.service # get rid of systemd service
   rm -f ${URFD_CONFIG_TMP_DIR}/*d.mk # remove pre-compile configuration file
+  chown -R www-data:www-data ${URFD_CONFIG_DIR} # set ownership to www-data so callinghome.php and lastcallhome.php can be written
   cp -vupn ${URFD_CONFIG_TMP_DIR}/* ${URFD_CONFIG_DIR}/ # don't overwrite config files if they exist in case they have been manually edited
   rm -rf ${URFD_CONFIG_TMP_DIR}
 
