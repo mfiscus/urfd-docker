@@ -237,7 +237,7 @@ if [[ -e ${URFD_CONFIG_DIR:-} ]] && [[ -e ${URFD_CONFIG_TMP_DIR:-} ]]; then
   __edit_value "NXDN" "ReflectorID" "${NXDNID}"
   __edit_value "P25" "ReflectorID" "${P25ID}"
   __edit_value "USRP" "Enable" "${ALLSTAR}"
-  __edit_value "USRP" "Callsign" "${CALLSIGN}"
+  __edit_value "USRP" "Callsign" "${CALLSIGN} G"
   __edit_value "USRP" "IPAddress" "${IP}"
   __edit_value "YSF" "RegistrationID" "${YSFID}"
   __edit_value "YSF" "RegistrationName" "${URFNUM}"
