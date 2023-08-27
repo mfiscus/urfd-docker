@@ -20,7 +20,7 @@ services:
       # Setting this to true will ensure 'https' is used in URL
       SSL: 'true'
       # Port that dashboard runs on. If SSL is enabled, then this is used for the backend proxy service
-      PORT: '80'
+      PORT: '8080'
       # Where ? is A-Z or 0-9. NO EXCEPTIONS!
       URFNUM: 'URF???'
       # Get an ID here -> https://register.ysfreflector.de

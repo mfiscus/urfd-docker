@@ -41,7 +41,7 @@ CALLHOME=false
 SSL=true
 
 # Port that dashboard runs on. If SSL is enabled, then this is used for the backend proxy service
-PORT="80"
+PORT="8080"
 
 # Get an ID here -> https://register.ysfreflector.de
 YSFID="12345"
@@ -133,7 +133,7 @@ services:
       # Setting this to true will ensure 'https' is used in URL
       SSL: 'true'
       # Port that dashboard runs on. If SSL is enabled, then this is used for the backend proxy service
-      PORT: '80'
+      PORT: '8080'
       # Where ? is A-Z or 0-9. NO EXCEPTIONS!
       URFNUM: 'URF???'
       # Get an ID here -> https://register.ysfreflector.de
@@ -264,6 +264,7 @@ services:
       # traefik ports
       - 80:80/tcp       # (HTTP webinsecure port)
       - 443:443/tcp     # (HTTPS websecure port)
+      - 8080:8080/tcp   # (HTTP Dashboard port)
       - 8880:8880/udp   # (DMR+ DMO mode)
       - 10002:10002/udp # (BM connection)
       - 10017:10017/udp # (URF interlinking)
@@ -313,7 +314,7 @@ services:
       # Allow request only from the predefined entry point named urfd-http
       traefik.http.routers.urfd-http.entrypoints: websecure
       # Specify proxy service port
-      traefik.http.services.urfd-http.loadbalancer.server.port: 80
+      traefik.http.services.urfd-http.loadbalancer.server.port: 8080
       # (DMR+ DMO mode)
       traefik.udp.routers.urfd-dmr.entrypoints: urfd-dmr
       traefik.udp.routers.urfd-dmr.service: urfd-dmr
@@ -393,7 +394,7 @@ services:
       # Setting this to true will ensure 'https' is used in URL
       SSL: 'true'
       # Port that dashboard runs on. If SSL is enabled, then this is used for the backend proxy service
-      PORT: '80'
+      PORT: '8080'
       # Where ? is A-Z or 0-9. NO EXCEPTIONS!
       URFNUM: 'URF???'
       # Get an ID here -> https://register.ysfreflector.de
