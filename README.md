@@ -59,7 +59,7 @@ BRANDMEISTER=false
 ALLSTAR=false
 
 # Change to your country
-COUNTRY="United States"
+COUNTRY="US"
 
 # Decribe your reflector. used in various places on dashboard *and* YSF registry
 DESCRIPTION="My urfd-docker reflector"
@@ -147,7 +147,7 @@ services:
       # Set to 'true' if you want to enable Allstar node
       ALLSTAR: 'false'
       # Change to your country
-      COUNTRY: 'United States'
+      COUNTRY: 'US'
       # Decribe your reflector. used in various place on dashboard and YSF registry
       DESCRIPTION: 'My urfd-docker reflector'
       # MODULES: ABCDEFGHIJKLMNOPQRSTUVWXYZ
@@ -408,7 +408,7 @@ services:
       # Set to 'true' if you want to enable Allstar node
       ALLSTAR: 'false'
       # Change to your country
-      COUNTRY: 'United States'
+      COUNTRY: 'US'
       # Decribe your reflector. used in various place on dashboard and YSF registry
       DESCRIPTION: 'My urfd-docker reflector'
       # MODULES: ABCDEFGHIJKLMNOPQRSTUVWXYZ
