@@ -182,14 +182,17 @@ if [[ ${SSL:-} == "true" ]]; then
 
 else
   __edit_dashboard "<?php echo \$Reflector->GetReflectorName(); ?> Multiprotocol Reflector" "<a href=\"http://${URL}:${PORT}/\"><img src=\"/img/logo.png\" alt=\"CHRC Logo\" width=\"50\" height=\"50\"></a>" # add custom logo
-  __edit_config "\(CallingHome\['MyDashBoardURL'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'" "'http:\/\/${URL}:${PORT}'" | grep "MyDashBoardURL" # URL
+  __edit_config "\(CallingHome\['MyDashBoardURL'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'" "'http:\/\/${URL}:${PORT}'" # URL
 
 fi
 
 
+__edit_dashboard "Universal" " ${DESCRIPTION} Universal" # customize and fix title
+
 __edit_config "\(CallingHome\['Country'\][[:blank:]]*\=[[:blank:]]*\)\"\([[:print:]]*\)\"" "\"$(echo ${COUNTRY} | awk '{gsub(/ /,"\\ ")}8')\"" # country
 __edit_config "\(CallingHome\['Comment'\][[:blank:]]*\=[[:blank:]]*\)\"\([[:print:]]*\)\"" "\"$(echo ${DESCRIPTION} | awk '{gsub(/ /,"\\ ")}8')\"" # comment
 __edit_config "\(CallingHome\['Active'\][[:blank:]]*\=[[:blank:]]*\)[[:alpha:]]*" "${CALLHOME}" # calling home toggle
+__edit_config "\(Service\['PIDFile'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'" "'${URFD_CONFIG_DIR}/xlxd.pid'" # path to pid file
 __edit_config "\(Service\['XMLFile'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'" "'${URFD_CONFIG_DIR}/xlxd.xml'" # path to xml file
 __edit_config "\(CallingHome\['HashFile'\][[:blank:]]*\=[[:blank:]]*\)\"\([[:print:]]*\)\"" "\"${URFD_CONFIG_DIR}/callinghome.php\"" # path to callinghome hash file
 __edit_config "\(CallingHome\['LastCallHomefile'\][[:blank:]]*\=[[:blank:]]*\)\"\([[:print:]]*\)\"" "\"${URFD_CONFIG_DIR}\/lastcallhome.php\"" # path to lastcallhome file
@@ -245,6 +248,7 @@ if [[ -e ${URFD_CONFIG_DIR:-} ]] && [[ -e ${URFD_CONFIG_TMP_DIR:-} ]]; then
   __edit_value "DMR ID DB" "FilePath" "${URFD_CONFIG_DIR}/dmrid.dat"
   __edit_value "NXDN ID DB" "FilePath" "${URFD_CONFIG_DIR}/nxdn.dat"
   __edit_value "YSF TX\/RX DB" "FilePath" "${URFD_CONFIG_DIR}/ysfnode.dat"
+  __edit_value "Files" "PidPath" "${URFD_CONFIG_DIR}/xlxd.pid"
   __edit_value "Files" "XmlPath" "${URFD_CONFIG_DIR}/xlxd.xml"
   __edit_value "Files" "WhitelistPath" "${URFD_CONFIG_DIR}/urfd.whitelist"
   __edit_value "Files" "BlacklistPath" "${URFD_CONFIG_DIR}/urfd.blacklist"

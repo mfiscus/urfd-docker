@@ -58,8 +58,8 @@ RUN tar -C / -Jxpf /tmp/s6-overlay-${ARCH}.tar.xz
 
 # Clone OpenDHT repository
 #ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#master ${OPENDHT_INST_DIR}
-#ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#v2.6.0rc7 ${OPENDHT_INST_DIR}
-ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#v2.5.5 ${OPENDHT_INST_DIR}
+#ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#v2.5.5 ${OPENDHT_INST_DIR}
+ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#v2.6.0.4 ${OPENDHT_INST_DIR}
 
 # Clone imbe_vocoder repository
 ADD --keep-git-dir=true https://github.com/nostar/imbe_vocoder.git#master ${IMBE_INST_DIR}
