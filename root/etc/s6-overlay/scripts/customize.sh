@@ -114,7 +114,7 @@ function __edit_config() {
         local replace=${2}
         local file=${URFD_WEB_DIR}/pgs/config.inc.php
 
-        sed -i "s,${search},\1${replace},g" ${file}
+        sed -i "s~${search}~\1${replace}~g" ${file}
 
         return
 
