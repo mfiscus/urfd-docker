@@ -8,8 +8,8 @@ ENV CALLSIGN EMAIL URL SSL="false" URFNUM=URF??? TZ="UTC"
 ENV CALLHOME=false COUNTRY="US" DESCRIPTION="XLX Reflector" PORT=80 YSFID=12345 NXDNID=12345 P25ID=12345
 ENV MODULES=ABCD MODULEA="Main" MODULEB="TBD" MODULEC="TBD" MODULED="TBD" BRANDMEISTER="false" ALLSTAR="false"
 ENV URFD_WEB_DIR=/var/www/urfd URFD_CONFIG_DIR=/config URFD_CONFIG_TMP_DIR=/config_tmp
-ARG URFD_INST_DIR=/src/urfd OPENDHT_INST_DIR=/src/opendht TCD_INST_DIR=/src/tcd IMBE_INST_DIR=/src/imbe_vocoder FTDI_INST_DIR=/src/ftdi
-ARG ARCH=x86_64 S6_OVERLAY_VERSION=3.1.5.0 S6_RCD_DIR=/etc/s6-overlay/s6-rc.d S6_LOGGING=1 S6_KEEP_ENV=1
+ARG DEBUG=false URFD_INST_DIR=/src/urfd OPENDHT_INST_DIR=/src/opendht TCD_INST_DIR=/src/tcd IMBE_INST_DIR=/src/imbe_vocoder FTDI_INST_DIR=/src/ftdi
+ARG ARCH=x86_64 S6_OVERLAY_VERSION=3.1.5.0 S6_RCD_DIR=/etc/s6-overlay/s6-rc.d S6_LOGGING=1 S6_KEEP_ENV=1 URFAPIVER=1.0
 
 # install dependencies
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
@@ -37,7 +37,10 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
         nlohmann-json3-dev \
         php \
         php-mbstring \
-        pkg-config 
+        pkg-config \
+        php-curl \
+        php-sqlite3 \
+        php-xml
 
 # Setup directories
 RUN mkdir -p \
@@ -59,7 +62,9 @@ RUN tar -C / -Jxpf /tmp/s6-overlay-${ARCH}.tar.xz
 # Clone OpenDHT repository
 #ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#master ${OPENDHT_INST_DIR}
 #ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#v2.5.5 ${OPENDHT_INST_DIR}
-ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#v2.6.0.4 ${OPENDHT_INST_DIR}
+#ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#v2.6.0.4 ${OPENDHT_INST_DIR}
+ADD --keep-git-dir=true https://github.com/savoirfairelinux/opendht.git#v3.0.1 ${OPENDHT_INST_DIR}
+
 
 # Clone imbe_vocoder repository
 ADD --keep-git-dir=true https://github.com/nostar/imbe_vocoder.git#master ${IMBE_INST_DIR}
@@ -96,11 +101,12 @@ RUN cd ${OPENDHT_INST_DIR} && \
     make && \
     make install
 
-# Perform pre-compiliation configurations (remove references to systemctl from Makefiles)
+# Perform pre-compiliation configurations (remove references to systemctl from Makefiles and/or enable debug)
 RUN sed -i "s/\(^[[:space:]]*[[:print:]]*..systemd*\)/#\1/" ${URFD_INST_DIR}/reflector/Makefile && \
     sed -i "s/\(^[[:space:]]*systemctl*\)/#\1/" ${URFD_INST_DIR}/reflector/Makefile && \
     sed -i "s/\(^[[:space:]]*[[:print:]]*..systemd*\)/#\1/" ${TCD_INST_DIR}/Makefile && \
-    sed -i "s/\(^[[:space:]]*systemctl*\)/#\1/" ${TCD_INST_DIR}/Makefile
+    sed -i "s/\(^[[:space:]]*systemctl*\)/#\1/" ${TCD_INST_DIR}/Makefile && \
+    sed -i "s'\(^debug[[:blank:]]*=[[:blank:]]*\)\([[:print:]]*\)'\1${DEBUG}'" ${URFD_INST_DIR}/config/urfd.mk
 
 # Compile and install tcd
 RUN cd ${TCD_INST_DIR} && \
@@ -125,11 +131,19 @@ RUN cp -vR ${URFD_INST_DIR}/dashboard/* ${URFD_WEB_DIR}/ && \
     chown -R www-data:www-data ${URFD_WEB_DIR}/
 
 # Copy in custom images and stylesheet
-COPY --chown=www-data:www-data custom/up.png ${URFD_WEB_DIR}/img/up.png
-COPY --chown=www-data:www-data custom/down.png ${URFD_WEB_DIR}/img/down.png
-COPY --chown=www-data:www-data custom/ear.png ${URFD_WEB_DIR}/img/ear.png
-COPY --chown=www-data:www-data custom/logo.png ${URFD_WEB_DIR}/img/logo.png
+COPY --chown=www-data:www-data custom/img/up.png ${URFD_WEB_DIR}/img/up.png
+COPY --chown=www-data:www-data custom/img/down.png ${URFD_WEB_DIR}/img/down.png
+COPY --chown=www-data:www-data custom/img/ear.png ${URFD_WEB_DIR}/img/ear.png
+COPY --chown=www-data:www-data custom/img/logo.png ${URFD_WEB_DIR}/img/logo.png
 COPY --chown=www-data:www-data custom/favicon.ico ${URFD_WEB_DIR}/favicon.ico
+
+# Install API
+RUN mkdir -p ${URFD_WEB_DIR}/api/${URFAPIVER}/reflector
+COPY --chown=www-data:www-data custom/api/${URFAPIVER}/reflector/index.php ${URFD_WEB_DIR}/api/${URFAPIVER}/reflector/index.php
+COPY --chown=www-data:www-data custom/operators.db ${URFD_CONFIG_TMP_DIR}/operators.db
+
+# Install Embedded dashboard
+COPY --chown=www-data:www-data custom/embed.php ${URFD_WEB_DIR}/embed.php
 
 # Copy in s6 service definitions and scripts
 COPY root/ /

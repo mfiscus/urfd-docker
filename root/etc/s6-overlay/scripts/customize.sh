@@ -28,8 +28,9 @@ function __edit_value() {
         local section=${1}
         local property=${2}
         local value=${3}
+        local file=${URFD_CONFIG_TMP_DIR}/urfd.ini
 
-        sed -i "/^\[${section}\]/,/^\[/{s'\(^${property}[[:blank:]]*=[[:blank:]]*\)\([[:print:]]*\)'\1${value}'}" ${URFD_CONFIG_TMP_DIR}/urfd.ini
+        sed -i "/^\[${section}\]/,/^\[/{s'\(^${property}[[:blank:]]*=[[:blank:]]*\)\([[:print:]]*\)'\1${value}'}" ${file}
 
         return
 
@@ -151,7 +152,7 @@ function __fix_date() {
     if [ ${#} -eq 1 ]; then
         local file=${URFD_WEB_DIR}/${1}
 
-        sed -i "s/d\.m\.Y/m\.d\.Y/g" ${file}
+        sed -i "s/d\.m\.Y/m\/d\/Y/g" ${file}
 
         return
 
