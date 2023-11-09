@@ -1,4 +1,5 @@
 <?php
+header("Access-Control-Allow-Origin: *");
 $URL = getenv('URL') or die('URL environment variable not set');
 $SSL = @getenv('SSL') or $SSL = false;
 ?>
