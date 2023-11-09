@@ -1,6 +1,6 @@
 .DS_Store
 src
-custom/*
-xlxd.xml
+custom/var/www/urfd/img
+custom/var/www/urfd/favicon.ico
 regex-test.sh
 .vscode

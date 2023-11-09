@@ -130,20 +130,8 @@ RUN cp -v ${URFD_INST_DIR}/config/* ${URFD_CONFIG_TMP_DIR}/
 RUN cp -vR ${URFD_INST_DIR}/dashboard/* ${URFD_WEB_DIR}/ && \
     chown -R www-data:www-data ${URFD_WEB_DIR}/
 
-# Copy in custom images and stylesheet
-COPY --chown=www-data:www-data custom/img/up.png ${URFD_WEB_DIR}/img/up.png
-COPY --chown=www-data:www-data custom/img/down.png ${URFD_WEB_DIR}/img/down.png
-COPY --chown=www-data:www-data custom/img/ear.png ${URFD_WEB_DIR}/img/ear.png
-COPY --chown=www-data:www-data custom/img/logo.png ${URFD_WEB_DIR}/img/logo.png
-COPY --chown=www-data:www-data custom/favicon.ico ${URFD_WEB_DIR}/favicon.ico
-
-# Install API
-RUN mkdir -p ${URFD_WEB_DIR}/api/${URFAPIVER}/reflector
-COPY --chown=www-data:www-data custom/api/${URFAPIVER}/reflector/index.php ${URFD_WEB_DIR}/api/${URFAPIVER}/reflector/index.php
-COPY --chown=www-data:www-data custom/operators.db ${URFD_CONFIG_TMP_DIR}/operators.db
-
-# Install Embedded dashboard
-COPY --chown=www-data:www-data custom/embed.php ${URFD_WEB_DIR}/embed.php
+# Install custom files
+COPY --chown=www-data:www-data custom/ /
 
 # Copy in s6 service definitions and scripts
 COPY root/ /
