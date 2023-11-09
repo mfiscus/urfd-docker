@@ -1,3 +1,7 @@
+<?php
+$URL = getenv('URL') or die('URL environment variable not set');
+$SSL = @getenv('SSL') or $SSL = false;
+?>
 <style>
 .reflector {
   text-align: left;
@@ -7,7 +11,7 @@
 </style>
 <script>
 const callApi = async () => {
-  const api = "https://xlx847.kk7mnz.com/api/1.0/reflector/";
+  const api = "<?php echo ($SSL == 'true') ? 'https' : 'http'; ?>://<?=$URL ?>/api/1.0/reflector/";
   const response = await fetch(api);
   const myJson = await response.json(); //extract JSON from the http response
   var table = "<table><tr><th class=\"reflector\">Name</th><th class=\"reflector\">Station</th class=\"reflector\"><th class=\"reflector\">Last Heard</th><th class=\"reflector\">Protocol</th></tr>";
