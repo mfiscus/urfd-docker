@@ -106,7 +106,9 @@ RUN sed -i "s/\(^[[:space:]]*[[:print:]]*..systemd*\)/#\1/" ${URFD_INST_DIR}/ref
     sed -i "s/\(^[[:space:]]*systemctl*\)/#\1/" ${URFD_INST_DIR}/reflector/Makefile && \
     sed -i "s/\(^[[:space:]]*[[:print:]]*..systemd*\)/#\1/" ${TCD_INST_DIR}/Makefile && \
     sed -i "s/\(^[[:space:]]*systemctl*\)/#\1/" ${TCD_INST_DIR}/Makefile && \
-    sed -i "s'\(^debug[[:blank:]]*=[[:blank:]]*\)\([[:print:]]*\)'\1${DEBUG}'" ${URFD_INST_DIR}/config/urfd.mk
+    sed -i "s'\(^debug[[:blank:]]*=[[:blank:]]*\)\([[:print:]]*\)'\1${DEBUG}'" ${URFD_INST_DIR}/config/urfd.mk && \
+    sed -i "s/header\ \&\&\ header->IsValid()\ \&\&\ frame &\&\ frame->IsValid()/header\ \&\&\ frame/" ${URFD_INST_DIR}/reflector/M17Protocol.cpp && \
+    sed -i "/switch (p) {/a\\\t\tcase\ EProtocol::m17:\n\t\t\treturn\ \"M17\";" ${URFD_INST_DIR}/reflector/GateKeeper.cpp
 
 # Compile and install tcd
 RUN cd ${TCD_INST_DIR} && \
@@ -145,7 +147,7 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
     apt -y clean && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /tmp/* && \
-    rm -rf /var/tmp/* && \
+    rm -rf /var/tmp/* #&& \
     rm -rf /src
 
 #TCP port(s) for http(s)
