@@ -1,4 +1,13 @@
-#!/command/with-contenv sh
+#!/command/with-contenv bash
+
+
+# disable TCD if TCD_ENABLE is set to false 
+if [[ ${TCD_ENABLE:-} == "false" ]]; then
+  s6-svc -O .
+  exit 0
+fi
+
+echo "Starting tcd"
 
 # start daemon
 exec /usr/local/bin/tcd ${URFD_CONFIG_DIR}/tcd.ini

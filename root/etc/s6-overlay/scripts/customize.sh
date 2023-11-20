@@ -177,6 +177,7 @@ if [ ! -z ${EMAIL:-} ]; then
 fi
 
 
+# enable ssl
 if [[ ${SSL:-} == "true" ]]; then
   __edit_dashboard "<?php echo \$Reflector->GetReflectorName(); ?> Multiprotocol Reflector" "<a href=\"https://${URL}/\"><img src=\"/img/logo.png\" alt=\"CHRC Logo\" width=\"50\" height=\"50\"></a>" # add custom logo
   __edit_config "\(CallingHome\['MyDashBoardURL'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'" "'https:\/\/${URL}'" # URL
