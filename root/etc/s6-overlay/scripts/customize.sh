@@ -275,6 +275,9 @@ cat << EOF > /etc/apache2/sites-available/${URL}.conf
 <VirtualHost *:${PORT}>
     ServerName ${URL}
     DocumentRoot ${URFD_WEB_DIR}
+    <Directory /var/www/urfd/>
+        AllowOverride All
+    </Directory>
 </VirtualHost>
 EOF
 
@@ -292,11 +295,15 @@ echo "ServerName ${URL}" >> /etc/apache2/apache2.conf
 
 
 # disable default site(s)
-a2dissite *default >/dev/null 2>&1
+a2dissite *default
 
 
-# enable xlxd dashboard
-a2ensite ${URL} >/dev/null 2>&1
+# enable urfd dashboard
+a2ensite ${URL}
+
+
+# enable rewrite module
+a2enmod rewrite
 
 touch /.firstRunComplete
 echo "urfd first run setup complete"

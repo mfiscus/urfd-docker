@@ -274,3 +274,5 @@ for ($i=0;$i<$Reflector->StationCount();$i++) {
 $records = json_encode($payload);
 
 echo $records;
+
+?>
