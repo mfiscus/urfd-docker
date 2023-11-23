@@ -3,7 +3,7 @@
 $Status = (file_exists($Service['PIDFile'])) ? 'up' : 'down';
 
 $payload = array(
-    'lastupdatechecktime' => date('c', time()),
+    'lastupdatechecktime' => date('Y-m-d\TH:i:sp', time()),
     'status'              => $Status,
     'uptime'              => $Reflector->GetServiceUptime()
 );
@@ -11,7 +11,7 @@ $payload = array(
 
 /*** add data to payload ***/
 $payload['data'] = array(
-    'filetime' => date('U', filemtime($Service['XMLFile'])),
+    'filetime' => date('Y-m-d\TH:i:sp', filemtime($Service['XMLFile'])),
     'callsign' => str_replace("XLX", "URF", $Reflector->GetReflectorName()),
     'version'  => $Reflector->GetVersion()
 );
@@ -24,8 +24,8 @@ for ($i=0;$i<$Reflector->PeerCount();$i++) {
         'callsign'      => $Reflector->Peers[$i]->GetCallSign(),
         'ip'            => $Reflector->Peers[$i]->GetIP(),
         'linkedmodule'  => $Reflector->Peers[$i]->GetLinkedModule(),
-        'connecttime'   => date('c', $Reflector->Peers[$i]->GetConnectTime()),
-        'lastheardtime' => date('c', $Reflector->Peers[$i]->GetLastHeardTime())
+        'connecttime'   => date('Y-m-d\TH:i:sp', $Reflector->Peers[$i]->GetConnectTime()),
+        'lastheardtime' => date('Y-m-d\TH:i:sp', $Reflector->Peers[$i]->GetLastHeardTime())
     );
 
 }
@@ -40,8 +40,8 @@ for ($i=0;$i<$Reflector->NodeCount();$i++) {
         'ip'            => $Reflector->Nodes[$i]->GetIP(),
         'linkedmodule'  => $Reflector->Nodes[$i]->GetLinkedModule(),
         'protocol'      => $Reflector->Nodes[$i]->GetProtocol(),
-        'connecttime'   => date('c', $Reflector->Nodes[$i]->GetConnectTime()),
-        'lastheardtime' => date('c', $Reflector->Nodes[$i]->GetLastHeardTime())
+        'connecttime'   => date('Y-m-d\TH:i:sp', $Reflector->Nodes[$i]->GetConnectTime()),
+        'lastheardtime' => date('Y-m-d\TH:i:sp', $Reflector->Nodes[$i]->GetLastHeardTime())
     );
 
 }
@@ -56,7 +56,7 @@ for ($i=0;$i<$Reflector->StationCount();$i++) {
         'vianode'       => $Reflector->Stations[$i]->GetVia(),
         'onmodule'      => $Reflector->Stations[$i]->GetModule(),
         'viapeer'       => $Reflector->Stations[$i]->GetPeer(),
-        'lastheardtime' => date('c', $Reflector->Stations[$i]->GetLastHeardTime())
+        'lastheardtime' => date('Y-m-d\TH:i:sp', $Reflector->Stations[$i]->GetLastHeardTime())
     );
 
 }

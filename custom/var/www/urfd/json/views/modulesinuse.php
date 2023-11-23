@@ -7,7 +7,7 @@ sort($Modules, SORT_STRING);
 /*** Add modules to payload ***/
 for ($i=0;$i<count($Modules);$i++) {
 
-    $payload = array(
+    $payload[$i] = array(
         'name' => $Modules[$i]
     );
 
@@ -15,7 +15,7 @@ for ($i=0;$i<count($Modules);$i++) {
 
     for ($j=0;$j<count($Users);$j++) {
 
-        $payload['callsigns'][] = array(
+        $payload[$i]['callsigns'][$j] = array(
             $Reflector->GetCallsignAndSuffixByID($Users[$j]),
         );
 

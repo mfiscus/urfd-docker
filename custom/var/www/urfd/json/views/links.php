@@ -4,13 +4,13 @@
 for ($i=0;$i<$Reflector->NodeCount();$i++) {
 
     // craft payload array
-    $payload = array(
+    $payload[$i] = array(
         'callsign'      => $Reflector->Nodes[$i]->GetCallSign() . ' ' . $Reflector->Nodes[$i]->GetSuffix(),
         'ip'            => $Reflector->Nodes[$i]->GetIP(),
         'linkedmodule'  => $Reflector->Nodes[$i]->GetLinkedModule(),
         'protocol'      => $Reflector->Nodes[$i]->GetProtocol(),
-        'connecttime'   => date('c', $Reflector->Nodes[$i]->GetConnectTime()),
-        'lastheardtime' => date('c', $Reflector->Nodes[$i]->GetLastHeardTime())
+        'connecttime'   => date('Y-m-d\TH:i:sp', $Reflector->Nodes[$i]->GetConnectTime()),
+        'lastheardtime' => date('Y-m-d\TH:i:sp', $Reflector->Nodes[$i]->GetLastHeardTime())
     );
 
 }
