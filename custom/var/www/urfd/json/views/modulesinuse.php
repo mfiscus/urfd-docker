@@ -15,9 +15,7 @@ for ($i=0;$i<count($Modules);$i++) {
 
     for ($j=0;$j<count($Users);$j++) {
 
-        $payload[$i]['callsigns'][$j] = array(
-            $Reflector->GetCallsignAndSuffixByID($Users[$j]),
-        );
+        $payload[$i]['callsigns'][$j] = $Reflector->GetCallsignAndSuffixByID($Users[$j]);
 
     }
 
