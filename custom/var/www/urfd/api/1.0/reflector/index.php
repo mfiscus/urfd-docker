@@ -2,8 +2,6 @@
 header("Access-Control-Allow-Origin: *");
 header('Content-Type: application/json');
 
-date_default_timezone_set("UTC");
-
 if (file_exists("../../../pgs/functions.php")) require_once("../../../pgs/functions.php");
 if (file_exists("../../../pgs/config.inc.php")) require_once("../../../pgs/config.inc.php");
 
@@ -206,8 +204,8 @@ for ($i=0;$i<$Reflector->PeerCount();$i++) {
 
     $payload['reflector']['linked'][] = array(
         'name'      => $Reflector->Peers[$i]->GetCallSign(),
-        'connected' => date('c', $Reflector->Peers[$i]->GetConnectTime()),
-        'lastheard' => date('c', $Reflector->Peers[$i]->GetLastHeardTime()),
+        'connected' => gmdate('c', $Reflector->Peers[$i]->GetConnectTime()),
+        'lastheard' => gmdate('c', $Reflector->Peers[$i]->GetLastHeardTime()),
         'protocol'  => $Reflector->Peers[$i]->GetProtocol(),
         'module'    => $Reflector->Peers[$i]->GetLinkedModule()
 
@@ -232,8 +230,8 @@ for ($i=0;$i<$Reflector->NodeCount();$i++) {
         'state'     => $operator['state'],
         'country'   => $operator['country'],
         'station'   => $Reflector->Nodes[$i]->GetCallSign() . '-' . $Reflector->Nodes[$i]->GetSuffix(),
-        'connected' => date('c', $Reflector->Nodes[$i]->GetConnectTime()),
-        'lastheard' => date('c', $Reflector->Nodes[$i]->GetLastHeardTime()),
+        'connected' => gmdate('c', $Reflector->Nodes[$i]->GetConnectTime()),
+        'lastheard' => gmdate('c', $Reflector->Nodes[$i]->GetLastHeardTime()),
         'module'    => $Reflector->Nodes[$i]->GetLinkedModule(),
         'protocol'  => $Reflector->Nodes[$i]->GetProtocol()
 
@@ -262,7 +260,7 @@ for ($i=0;$i<$Reflector->StationCount();$i++) {
         'usrtxt'    => $Reflector->Stations[$i]->GetSuffix(),
         'via'       => $via,
         'peer'      => $Reflector->Stations[$i]->GetPeer(),
-        'lastheard' => date('c', $Reflector->Stations[$i]->GetLastHeardTime()),
+        'lastheard' => gmdate('c', $Reflector->Stations[$i]->GetLastHeardTime()),
         'module'    => $Reflector->Stations[$i]->GetModule()
 
     );

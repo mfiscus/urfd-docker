@@ -29,14 +29,14 @@ function __edit_value() {
         local property=${2}
         local value=${3}
         local file=${URFD_CONFIG_TMP_DIR}/urfd.ini
-
+        
         sed -i "/^\[${section}\]/,/^\[/{s'\(^${property}[[:blank:]]*=[[:blank:]]*\)\([[:print:]]*\)'\1${value}'}" ${file}
-
+        
         return
-
+        
     else
         exit 1
-
+        
     fi
 
 }
@@ -50,14 +50,14 @@ function __edit_property() {
         local old_property=${1}
         local new_property=${2}
         local file=${URFD_CONFIG_TMP_DIR}/urfd.ini
-
+        
         sed -i "s/${old_property}/${new_property}/g" ${file}
-
+        
         return
-
+        
     else
         exit 1
-
+        
     fi
 
 }
@@ -71,14 +71,14 @@ function __line_comment() {
         local section=${1}
         local property=${2}
         local file=${URFD_CONFIG_TMP_DIR}/urfd.ini
-
+        
         sed -i "/^\[${section}\]/,/^\[/{s'\(^${property}\)'#\ \1'}" ${file}
-
+        
         return
-
+        
     else
         exit 1
-
+        
     fi
 
 }
@@ -92,14 +92,14 @@ function __edit_dashboard() {
         local search=${1}
         local replace=${2}
         local file=${URFD_WEB_DIR}/index.php
-
+        
         sed -i "s,${search},${replace},g" ${file}
-
+        
         return
-
+        
     else
         exit 1
-
+        
     fi
     
 }
@@ -113,14 +113,14 @@ function __edit_config() {
         local search=${1}
         local replace=${2}
         local file=${URFD_WEB_DIR}/pgs/config.inc.php
-
+        
         sed -i "s~${search}~\1${replace}~g" ${file}
-
+        
         return
-
+        
     else
         exit 1
-
+        
     fi
     
 }
@@ -133,14 +133,14 @@ function __delete_line() {
     if [ ${#} -eq 2 ]; then
         local delete=${1}
         local file=${URFD_WEB_DIR}/${2}
-
+        
         sed -i "/${delete}/d" ${file}
-
+        
         return
-
+        
     else
         exit 1
-
+        
     fi
 
 }
@@ -151,14 +151,14 @@ function __delete_line() {
 function __fix_date() {
     if [ ${#} -eq 1 ]; then
         local file=${URFD_WEB_DIR}/${1}
-
+        
         sed -i "s/d\.m\.Y/m\/d\/Y/g" ${file}
-
+        
         return
-
+        
     else
         exit 1
-
+        
     fi
 
 }
@@ -166,25 +166,25 @@ function __fix_date() {
 
 # configure dashboard
 if [ ! -z ${CALLSIGN:-} ]; then
-  __edit_config "\(PageOptions\['MetaAuthor'\][[:blank:]]*\=[[:blank:]]*\)'\([[:alnum:]]*\)'" "'${CALLSIGN}'" # callsign
+    __edit_config "\(PageOptions\['MetaAuthor'\][[:blank:]]*\=[[:blank:]]*\)'\([[:alnum:]]*\)'" "'${CALLSIGN}'" # callsign
 
 fi
 
 
 if [ ! -z ${EMAIL:-} ]; then
-  __edit_config "\(PageOptions\['ContactEmail'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'" "'${EMAIL}'" # email address
+    __edit_config "\(PageOptions\['ContactEmail'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'" "'${EMAIL}'" # email address
 
 fi
 
 
 # enable ssl
 if [[ ${SSL:-} == "true" ]]; then
-  __edit_dashboard "<?php echo \$Reflector->GetReflectorName(); ?> Multiprotocol Reflector" "<a href=\"https://${URL}/\"><img src=\"/img/logo.png\" alt=\"CHRC Logo\" width=\"50\" height=\"50\"></a>" # add custom logo
-  __edit_config "\(CallingHome\['MyDashBoardURL'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'" "'https:\/\/${URL}'" # URL
+    __edit_dashboard "<?php echo \$Reflector->GetReflectorName(); ?> Multiprotocol Reflector" "<a href=\"https://${URL}/\"><img src=\"/img/logo.png\" alt=\"CHRC Logo\" width=\"50\" height=\"50\"></a>" # add custom logo
+    __edit_config "\(CallingHome\['MyDashBoardURL'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'" "'https:\/\/${URL}'" # URL
 
 else
-  __edit_dashboard "<?php echo \$Reflector->GetReflectorName(); ?> Multiprotocol Reflector" "<a href=\"http://${URL}:${PORT}/\"><img src=\"/img/logo.png\" alt=\"CHRC Logo\" width=\"50\" height=\"50\"></a>" # add custom logo
-  __edit_config "\(CallingHome\['MyDashBoardURL'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'" "'http:\/\/${URL}:${PORT}'" # URL
+    __edit_dashboard "<?php echo \$Reflector->GetReflectorName(); ?> Multiprotocol Reflector" "<a href=\"http://${URL}:${PORT}/\"><img src=\"/img/logo.png\" alt=\"CHRC Logo\" width=\"50\" height=\"50\"></a>" # add custom logo
+    __edit_config "\(CallingHome\['MyDashBoardURL'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'" "'http:\/\/${URL}:${PORT}'" # URL
 
 fi
 
@@ -205,6 +205,7 @@ __edit_config "\(PageOptions\['ModuleNames'\]\['C'\][[:blank:]]*\=[[:blank:]]*\)
 __edit_config "\(PageOptions\['ModuleNames'\]\['D'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'" "'${MODULED}'" # name module D
 __edit_config "\(PageOptions\['RepeatersPage'\]\['IPModus'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'" "'HideIP'" # hide IP address on repeaters page
 __edit_config "\(PageOptions\['PeerPage'\]\['IPModus'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'" "'HideIP'" # hide IP address on peers page
+__edit_config "\(PageOptions\['DashboardVersion'\][[:blank:]]*\=[[:blank:]]*\)'\([[:print:]]*\)'" "'2.5.0'" # email address
 __delete_line "show=livequadnet" "index.php" # remove livequadnet
 __delete_line "_GET\['show'\]\ ==\ \"livequadnet\"" "index.php" # remove livequadnet
 __fix_date "pgs/users.php" # convert date format to US
@@ -214,54 +215,54 @@ __fix_date "pgs/repeaters.php" # convert date format to US
 
 # install configuration files
 if [[ -e ${URFD_CONFIG_DIR:-} ]] && [[ -e ${URFD_CONFIG_TMP_DIR:-} ]]; then
-  IP=$( hostname -I )
+    IP=$( hostname -I )
   
-  if [[ ${SSL:-} == "true" ]]; then
-    __edit_value "Names" "DashboardUrl" "https://${URL}"
+    if [[ ${SSL:-} == "true" ]]; then
+        __edit_value "Names" "DashboardUrl" "https://${URL}"
+        
+    else
+        __edit_value "Names" "DashboardUrl" "http://${URL}:${PORT}"
+        
+    fi
 
-  else
-    __edit_value "Names" "DashboardUrl" "http://${URL}:${PORT}"
-  
-  fi
 
-
-  __edit_value "Names" "Callsign" "${URFNUM}"
-  __edit_value "Names" "SysopEmail" "${EMAIL}"
-  __edit_value "Names" "Country" "${COUNTRY}"
-  __edit_value "Names" "Sponsor" "${DESCRIPTION}"
-  __edit_value "Modules" "Modules" "${MODULES}"
-  __edit_value "Modules" "DescriptionA" "${MODULEA}"
-  __edit_property "DescriptionD" "DescriptionB"
-  __edit_value "Modules" "DescriptionB" "${MODULEB}"
-  __edit_property "DescriptionM" "DescriptionC"
-  __edit_value "Modules" "DescriptionC" "${MODULEC}"
-  __edit_property "DescriptionS" "DescriptionD"
-  __edit_value "Modules" "DescriptionD" "${MODULED}"
-  __line_comment "Modules" "DescriptionZ"
-  __edit_value "Brandmeister" "Enable" "${BRANDMEISTER}"
-  __edit_value "NXDN" "ReflectorID" "${NXDNID}"
-  __edit_value "P25" "ReflectorID" "${P25ID}"
-  __edit_value "USRP" "Enable" "${ALLSTAR}"
-  __edit_value "USRP" "Callsign" "${CALLSIGN} G"
-  __edit_value "USRP" "IPAddress" "${IP}"
-  __edit_value "YSF" "RegistrationID" "${YSFID}"
-  __edit_value "YSF" "RegistrationName" "${URFNUM}"
-  __edit_value "YSF" "RegistrationDescription" "${DESCRIPTION}"
-  __edit_value "DMR ID DB" "FilePath" "${URFD_CONFIG_DIR}/dmrid.dat"
-  __edit_value "NXDN ID DB" "FilePath" "${URFD_CONFIG_DIR}/nxdn.dat"
-  __edit_value "YSF TX\/RX DB" "FilePath" "${URFD_CONFIG_DIR}/ysfnode.dat"
-  __edit_value "Files" "PidPath" "${URFD_CONFIG_DIR}/xlxd.pid"
-  __edit_value "Files" "XmlPath" "${URFD_CONFIG_DIR}/xlxd.xml"
-  __edit_value "Files" "WhitelistPath" "${URFD_CONFIG_DIR}/urfd.whitelist"
-  __edit_value "Files" "BlacklistPath" "${URFD_CONFIG_DIR}/urfd.blacklist"
-  __edit_value "Files" "InterlinkPath" "${URFD_CONFIG_DIR}/urfd.interlink"
-  __edit_value "Files" "G3TerminalPath" "${URFD_CONFIG_DIR}/urfd.terminal"
-
-  rm -f ${URFD_CONFIG_TMP_DIR}/*d.service # get rid of systemd service
-  rm -f ${URFD_CONFIG_TMP_DIR}/*d.mk # remove pre-compile configuration file
-  chown -R www-data:www-data ${URFD_CONFIG_DIR} # set ownership to www-data so callinghome.php and lastcallhome.php can be written
-  cp -vupn ${URFD_CONFIG_TMP_DIR}/* ${URFD_CONFIG_DIR}/ # don't overwrite config files if they exist in case they have been manually edited
-  rm -rf ${URFD_CONFIG_TMP_DIR}
+    __edit_value "Names" "Callsign" "${URFNUM}"
+    __edit_value "Names" "SysopEmail" "${EMAIL}"
+    __edit_value "Names" "Country" "${COUNTRY}"
+    __edit_value "Names" "Sponsor" "${DESCRIPTION}"
+    __edit_value "Modules" "Modules" "${MODULES}"
+    __edit_value "Modules" "DescriptionA" "${MODULEA}"
+    __edit_property "DescriptionD" "DescriptionB"
+    __edit_value "Modules" "DescriptionB" "${MODULEB}"
+    __edit_property "DescriptionM" "DescriptionC"
+    __edit_value "Modules" "DescriptionC" "${MODULEC}"
+    __edit_property "DescriptionS" "DescriptionD"
+    __edit_value "Modules" "DescriptionD" "${MODULED}"
+    __line_comment "Modules" "DescriptionZ"
+    __edit_value "Brandmeister" "Enable" "${BRANDMEISTER}"
+    __edit_value "NXDN" "ReflectorID" "${NXDNID}"
+    __edit_value "P25" "ReflectorID" "${P25ID}"
+    __edit_value "USRP" "Enable" "${ALLSTAR}"
+    __edit_value "USRP" "Callsign" "${CALLSIGN} G"
+    __edit_value "USRP" "IPAddress" "${IP}"
+    __edit_value "YSF" "RegistrationID" "${YSFID}"
+    __edit_value "YSF" "RegistrationName" "${URFNUM}"
+    __edit_value "YSF" "RegistrationDescription" "${DESCRIPTION}"
+    __edit_value "DMR ID DB" "FilePath" "${URFD_CONFIG_DIR}/dmrid.dat"
+    __edit_value "NXDN ID DB" "FilePath" "${URFD_CONFIG_DIR}/nxdn.dat"
+    __edit_value "YSF TX\/RX DB" "FilePath" "${URFD_CONFIG_DIR}/ysfnode.dat"
+    __edit_value "Files" "PidPath" "${URFD_CONFIG_DIR}/xlxd.pid"
+    __edit_value "Files" "XmlPath" "${URFD_CONFIG_DIR}/xlxd.xml"
+    __edit_value "Files" "WhitelistPath" "${URFD_CONFIG_DIR}/urfd.whitelist"
+    __edit_value "Files" "BlacklistPath" "${URFD_CONFIG_DIR}/urfd.blacklist"
+    __edit_value "Files" "InterlinkPath" "${URFD_CONFIG_DIR}/urfd.interlink"
+    __edit_value "Files" "G3TerminalPath" "${URFD_CONFIG_DIR}/urfd.terminal"
+    
+    rm -f ${URFD_CONFIG_TMP_DIR}/*d.service # get rid of systemd service
+    rm -f ${URFD_CONFIG_TMP_DIR}/*d.mk # remove pre-compile configuration file
+    chown -R www-data:www-data ${URFD_CONFIG_DIR} # set ownership to www-data so callinghome.php and lastcallhome.php can be written
+    cp -vupn ${URFD_CONFIG_TMP_DIR}/* ${URFD_CONFIG_DIR}/ # don't overwrite config files if they exist in case they have been manually edited
+    rm -rf ${URFD_CONFIG_TMP_DIR}
 
 fi
 
@@ -284,7 +285,7 @@ EOF
 
 # Configure default timezone in php
 if [ ! -z ${TZ:-} ]; then
-  echo "date.timezone = \""${TZ}"\"" >> /etc/php/*/apache2/php.ini
+    echo "date.timezone = \""${TZ}"\"" >> /etc/php/*/apache2/php.ini
 
 fi
 

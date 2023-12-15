@@ -147,7 +147,7 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
     apt -y clean && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /tmp/* && \
-    rm -rf /var/tmp/* #&& \
+    rm -rf /var/tmp/* && \
     rm -rf /src
 
 #TCP port(s) for http(s)
